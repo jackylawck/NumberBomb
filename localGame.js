@@ -1,5 +1,5 @@
 /* =========================================================================
- * 🎲 localGame.js - 單機傳機模式引擎 (Pass & Play Engine)
+ * 🎲 localGame.js - 單機傳機模式 (Pass & Play Engine)
  * ========================================================================= */
 class LocalBombGame {
   constructor(playerNames, targetNumber = null) {
