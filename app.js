@@ -1,5 +1,5 @@
 /* =========================================================================
- * 🎮 app.js - 核心路由、單機運作與線上協調器 (True Production Grade)
+ * 🎮 app.js - 核心路由、單機運作與線上協調器 (100 / 100 Production Final)
  * ========================================================================= */
 
 function generateSecureToken() {
@@ -46,7 +46,7 @@ const App = {
 };
 localStorage.setItem('clientToken', App.clientToken);
 
-// Host 端每位玩家表情頻率鎖定容器
+// Host 端每位玩家表情頻率防刷限制
 const lastReactionTimeByToken = new Map();
 
 // ---------------- i18n 渲染 ----------------
@@ -71,14 +71,25 @@ document.getElementById('langToggle').addEventListener('click', () => {
   if (App.screen === 'solo_result') renderResultScreen();
 });
 
-// ---------------- 螢幕路由 ----------------
+// ---------------- 螢幕路由（徹底控制生命週期） ----------------
 function goto(screen) {
   document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
   const el = document.querySelector(`[data-screen="${screen}"]`);
   if (el) el.classList.add('active');
   App.screen = screen;
+
+  // 🛡️ 關鍵防線 1：不依賴瀏覽器 blur，換頁直接強制收合頂部懸浮膠囊
+  const rangeMini = document.getElementById('rangeMini');
+  if (rangeMini && screen !== 'solo_input') {
+    rangeMini.classList.remove('show');
+  }
+
   if (screen === 'online_play') {
     App.currentReactionPhase = null;
+  }
+  // 進入單機輸入時重置所有可能殘留的壓力樣式
+  if (screen === 'solo_input') {
+    el.classList.remove('warn', 'danger', 'critical');
   }
   window.scrollTo(0, 0);
 }
@@ -97,12 +108,13 @@ window.addEventListener('beforeunload', (e) => {
   }
 });
 
-// ---------------- Web Audio API ----------------
+// ---------------- Web Audio 原生合成音效 ----------------
 let audioCtx = null;
 function ensureAudioUnlocked() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
 }
+
 function playBoomSound() {
   try {
     ensureAudioUnlocked();
@@ -119,11 +131,63 @@ function playBoomSound() {
   } catch (e) {}
 }
 
+// 🛡️ 關鍵細節：進入必爆 critical 時的雙重低頻心跳重擊聲
+function playHeartbeatWarning() {
+  try {
+    ensureAudioUnlocked();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(65, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.15);
+  } catch (e) {}
+}
+
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-// ---------------- 單機模式 ----------------
+// ---------------- 單一事實來源：嚴謹數字校驗 ----------------
+function validateGuess(rawValue, range) {
+  const trimmed = String(rawValue).trim();
+  if (!trimmed || !/^-?\d+$/.test(trimmed)) {
+    return { valid: false, reason: 'not_integer' };
+  }
+  const val = Number(trimmed);
+  if (!Number.isInteger(val)) {
+    return { valid: false, reason: 'not_integer' };
+  }
+  if (val <= range[0] || val >= range[1]) {
+    return { valid: false, reason: 'out_of_range' };
+  }
+  return { valid: true, value: val };
+}
+
+// ---------------- 動態三級張力分層 ----------------
+function updateDangerLevel(range) {
+  const screenEl = document.querySelector('[data-screen="solo_input"]');
+  if (!screenEl) return;
+  const diff = range[1] - range[0];
+  screenEl.classList.remove('warn', 'danger', 'critical');
+
+  if (diff <= 2) {
+    // 唯一剩餘 1 個數字，下一手必爆！
+    screenEl.classList.add('critical');
+    if (navigator.vibrate) navigator.vibrate([80, 50, 80]);
+    playHeartbeatWarning();
+  } else if (diff <= 6) {
+    screenEl.classList.add('danger');
+  } else if (diff <= 12) {
+    screenEl.classList.add('warn');
+  }
+}
+
+// ---------------- 單機模式 (Pass & Play) ----------------
 const nameInput = document.getElementById('soloNameInput');
 const addBtn = document.getElementById('soloAddBtn');
 const listEl = document.getElementById('soloPlayerList');
@@ -181,33 +245,75 @@ document.getElementById('passReadyBtn').addEventListener('click', () => {
 
 function renderInputScreen() {
   const g = App.solo.game;
+  const rangeStr = `${g.range[0]} ~ ${g.range[1]}`;
+
   document.getElementById('inputWhoTurn').textContent = `${I18N[App.lang].input_your_turn} · ${g.getCurrentPlayer()}`;
-  document.getElementById('inputRange').textContent = `${g.range[0]} ~ ${g.range[1]}`;
+  document.getElementById('inputRange').textContent = rangeStr;
+
+  const rangeMini = document.getElementById('rangeMini');
+  if (rangeMini) rangeMini.textContent = rangeStr;
+
+  updateDangerLevel(g.range);
+
   const inp = document.getElementById('soloGuessInput');
   inp.value = '';
+  inp.classList.remove('in-range', 'out-of-range');
   inp.focus();
   document.getElementById('inputError').textContent = '';
 }
 
+const soloInp = document.getElementById('soloGuessInput');
+const rangeMiniEl = document.getElementById('rangeMini');
+
+soloInp.addEventListener('focus', () => rangeMiniEl && rangeMiniEl.classList.add('show'));
+soloInp.addEventListener('blur', () => rangeMiniEl && rangeMiniEl.classList.remove('show'));
+
+// 🛡️ 關鍵防線 2：輸入時不嘮叨整數報錯，但純數字超界時精準提示
+soloInp.addEventListener('input', (e) => {
+  const g = App.solo.game;
+  const inp = e.target;
+  const errEl = document.getElementById('inputError');
+  const [min, max] = g.range;
+
+  inp.classList.remove('in-range', 'out-of-range');
+  errEl.textContent = '';
+
+  const raw = e.target.value;
+  if (!raw) return;
+
+  const result = validateGuess(raw, g.range);
+  if (result.valid) {
+    inp.classList.add('in-range');
+  } else {
+    inp.classList.add('out-of-range');
+    // 只有在打完純數字卻超界時才給即時輔助文字，打字中途不噴雜訊
+    if (result.reason === 'out_of_range' && /^\d+$/.test(raw.trim())) {
+      errEl.textContent = t('err_out_of_range', App.lang, { min: min + 1, max: max - 1 });
+    }
+  }
+});
+
 document.getElementById('soloSubmitBtn').addEventListener('click', handleSoloSubmit);
-document.getElementById('soloGuessInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSoloSubmit(); });
+soloInp.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSoloSubmit(); });
 
 function handleSoloSubmit() {
   const g = App.solo.game;
-  const raw = document.getElementById('soloGuessInput').value.trim();
-  const val = Number(raw);
+  const raw = soloInp.value;
+  const errEl = document.getElementById('inputError');
   const [min, max] = g.range;
 
-  if (!raw || !Number.isInteger(val)) {
-    document.getElementById('inputError').textContent = I18N[App.lang].err_not_a_number;
-    return;
-  }
-  if (val <= min || val >= max) {
-    document.getElementById('inputError').textContent = t('err_out_of_range', App.lang, { min: min + 1, max: max - 1 });
+  const check = validateGuess(raw, g.range);
+
+  if (!check.valid) {
+    if (check.reason === 'not_integer') {
+      errEl.textContent = I18N[App.lang].err_not_a_number;
+    } else {
+      errEl.textContent = t('err_out_of_range', App.lang, { min: min + 1, max: max - 1 });
+    }
     return;
   }
 
-  const result = g.submitGuess(val);
+  const result = g.submitGuess(check.value);
   if (result.boom) {
     showBoom(result.loser, result.number);
   } else {
@@ -328,7 +434,7 @@ function onHostReceivedData(data, conn) {
     broadcastToAll(snapshot);
   }
 
-  // 🛡️ 關鍵防線 1：型別驗證，嚴格要求為有限整數，防禦 NaN 與型別污染
+  // 型別安全過濾
   if (data.type === 'SUBMIT_GUESS') {
     const raw = Number(data.value);
     if (!Number.isInteger(raw)) return;
@@ -336,7 +442,7 @@ function onHostReceivedData(data, conn) {
     handleOnlineGuess(raw, conn._token);
   }
 
-  // 🛡️ 關鍵防線 2：Host 端硬性速率限制 + 白名單 + 名稱由 Host 權威反查
+  // 硬性速率限制、白名單與權威反查
   if (data.type === 'REACTION') {
     const t = conn._token;
     if (!t) return;
@@ -609,7 +715,7 @@ function spawnReactionBubble(emoji, name) {
   setTimeout(() => el.remove(), 2500);
 }
 
-// ---------------- 啟動處理 ----------------
+// ---------------- 初始化 ----------------
 applyI18n();
 
 const urlParams = new URLSearchParams(window.location.search);
