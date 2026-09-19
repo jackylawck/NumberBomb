@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self';
+                 script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com;
+                 style-src 'self' 'unsafe-inline';
+                 connect-src 'self' wss://*.peerjs.com https://*.peerjs.com stun: turn:;">
+  <title>開口中・Number Bomb</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <button id="langToggle" class="lang-toggle" aria-label="Toggle language">🌐 EN</button>
+  <div id="reactionLayer"></div>
+  <div id="toastContainer" class="toast-container"></div>
+
+  <main id="app">
+
+    <!-- 1. 首頁 -->
+    <section class="screen active" data-screen="home">
+      <h1 class="game-title" data-i18n="title"></h1>
+      <p class="mode-choose" data-i18n="choose_mode"></p>
+      <div class="mode-grid">
+        <button class="mode-card solo" data-goto="solo_setup">
+          <span class="mode-emoji">📱</span>
+          <span class="mode-name" data-i18n="solo_mode"></span>
+          <span class="mode-desc" data-i18n="solo_desc"></span>
+        </button>
+        <button class="mode-card online" data-goto="online_choice">
+          <span class="mode-emoji">🌐</span>
+          <span class="mode-name" data-i18n="online_mode"></span>
+          <span class="mode-desc" data-i18n="online_desc"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. 單機：名單 -->
+    <section class="screen" data-screen="solo_setup">
+      <button class="btn-back" data-back="home">←</button>
+      <h2 data-i18n="solo_setup_title"></h2>
+      <p class="sub" data-i18n="solo_setup_sub"></p>
+      <div class="input-row">
+        <input id="soloNameInput" type="text" maxlength="12" data-i18n-ph="solo_player_ph" autocomplete="off" />
+        <button id="soloAddBtn" class="btn-primary" data-i18n="solo_add"></button>
+      </div>
+      <ul id="soloPlayerList" class="player-list"></ul>
+      <p id="soloSetupHint" class="hint"></p>
+      <button id="soloStartBtn" class="btn-cta" disabled data-i18n="solo_start"></button>
+    </section>
+
+    <!-- 3. 單機：交接屏 -->
+    <section class="screen pass-screen" data-screen="solo_pass">
+      <p class="pass-label" data-i18n="pass_to"></p>
+      <h2 class="pass-name" id="passName"></h2>
+      <p class="pass-tip" data-i18n="pass_tip"></p>
+      <button class="btn-cta" id="passReadyBtn" data-i18n="pass_ready"></button>
+    </section>
+
+    <!-- 4. 單機：輸入 -->
+    <section class="screen" data-screen="solo_input">
+      <h2 id="inputWhoTurn"></h2>
+      <div class="range-badge">
+        <span data-i18n="input_range_now"></span>
+        <strong id="inputRange"></strong>
+      </div>
+      <input id="soloGuessInput" type="number" inputmode="numeric" class="big-input" data-i18n-ph="input_hint" autocomplete="off" />
+      <p id="inputError" class="error"></p>
+      <button id="soloSubmitBtn" class="btn-cta" data-i18n="input_submit"></button>
+    </section>
+
+    <!-- 5. 單機：安全結果 -->
+    <section class="screen" data-screen="solo_result">
+      <h2 id="resultTitle" class="result-safe"></h2>
+      <div class="range-badge">
+        <span data-i18n="result_range_shrunk"></span>
+        <strong id="resultRange"></strong>
+      </div>
+      <p class="next-hint">
+        <span data-i18n="result_next_is"></span>
+        <strong id="resultNextName"></strong>
+      </p>
+      <button class="btn-cta" id="resultContinueBtn" data-i18n="result_continue"></button>
+    </section>
+
+    <!-- 6. 單機：爆炸 -->
+    <section class="screen boom-screen" data-screen="solo_boom">
+      <div class="boom-flash"></div>
+      <h1 class="boom-title" data-i18n="boom_title"></h1>
+      <p class="boom-loser-label" data-i18n="boom_loser"></p>
+      <h2 class="boom-loser-name" id="boomLoser"></h2>
+      <p class="boom-number-label" data-i18n="boom_number"></p>
+      <div class="boom-number" id="boomNumber"></div>
+      <div class="penalty-card">
+        <p class="penalty-title" data-i18n="boom_penalty"></p>
+        <p class="penalty-text" id="boomPenalty"></p>
+      </div>
+      <button class="btn-cta" id="boomNextBtn" data-i18n="boom_next_round"></button>
+    </section>
+
+    <!-- 7. 連線：身分選擇 -->
+    <section class="screen" data-screen="online_choice">
+      <button class="btn-back" data-back="home">←</button>
+      <h2 data-i18n="online_mode"></h2>
+      <div class="mode-grid">
+        <button class="mode-card" id="btnGoHost">
+          <span class="mode-emoji">🎙️</span>
+          <span class="mode-name" data-i18n="host_mode"></span>
+          <span class="mode-desc" data-i18n="host_desc"></span>
+        </button>
+        <button class="mode-card" id="btnGoClient">
+          <span class="mode-emoji">📲</span>
+          <span class="mode-name" data-i18n="client_mode"></span>
+          <span class="mode-desc" data-i18n="client_desc"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 8. 連線：主持人控制台 -->
+    <section class="screen" data-screen="online_host">
+      <button class="btn-back" data-back="online_choice">←</button>
+      <div class="host-header">
+        <div>
+          <span class="label" data-i18n="room_code"></span>: <strong id="hostRoomCode">--------</strong>
+        </div>
+        <div id="hostPlayerCountBadge">👥 0 / 20</div>
+      </div>
+
+      <div id="hostLobby">
+        <div id="hostQrcode" class="qrcode-box"></div>
+        <div class="custom-bomb-box">
+          <label data-i18n="target_mode"></label>
+          <div class="input-row">
+            <input id="hostCustomBomb" type="number" placeholder="隨機 (2~99) 或手動自訂" />
+          </div>
+        </div>
+        <button id="hostStartGameBtn" class="btn-cta" data-i18n="start_game"></button>
+      </div>
+
+      <div id="hostGameBoard" style="display:none;">
+        <div class="big-range" id="hostRangeDisplay">1 ~ 100</div>
+        <div class="turn-callout">
+          <span data-i18n="current_turn"></span> 👉 <strong id="hostCurrentTurnName">---</strong>
+        </div>
+        <div class="admin-controls">
+          <button id="hostOverrideBtn" class="btn-secondary" data-i18n="proxy_input"></button>
+          <button id="hostSkipBtn" class="btn-secondary" data-i18n="skip_player"></button>
+        </div>
+      </div>
+
+      <ul id="hostPlayerList" class="player-list compact"></ul>
+    </section>
+
+    <!-- 9. 連線：參加者加入 -->
+    <section class="screen" data-screen="online_join">
+      <button class="btn-back" data-back="online_choice">←</button>
+      <h2 data-i18n="join_room_title"></h2>
+      <div class="input-group">
+        <input id="joinRoomCodeInput" type="text" maxlength="8" data-i18n-ph="room_code_ph" />
+        <input id="joinNameInput" type="text" maxlength="12" data-i18n-ph="solo_player_ph" />
+        <button id="joinConnectBtn" class="btn-cta" data-i18n="btn_join"></button>
+      </div>
+    </section>
+
+    <!-- 10. 連線：參加者遊戲中 -->
+    <section class="screen" data-screen="online_play">
+      <div class="play-header">
+        <span class="range-pill" id="clientRangeDisplay">1 ~ 100</span>
+      </div>
+      <div class="turn-status-box">
+        <h3 id="clientTurnStatus">等待遊戲開始...</h3>
+      </div>
+      <div id="clientInputArea" style="display:none;">
+        <input id="clientGuessInput" type="number" inputmode="numeric" class="big-input" data-i18n-ph="input_hint" />
+        <button id="clientSubmitBtn" class="btn-cta" data-i18n="input_submit"></button>
+      </div>
+      <div class="reaction-bar" id="reactionBar"></div>
+    </section>
+
+    <!-- 11. 連線：爆炸結算屏 -->
+    <section class="screen boom-screen" data-screen="online_boom">
+      <div class="boom-flash"></div>
+      <h1 class="boom-title" data-i18n="boom_title"></h1>
+      <p class="boom-loser-label" data-i18n="boom_loser"></p>
+      <h2 class="boom-loser-name" id="onlineBoomLoser"></h2>
+      <p class="boom-number-label" data-i18n="boom_number"></p>
+      <div class="boom-number" id="onlineBoomNumber"></div>
+      <div class="penalty-card">
+        <p class="penalty-title" data-i18n="boom_penalty"></p>
+        <p class="penalty-text" id="onlineBoomPenalty"></p>
+      </div>
+      <div id="onlineBoomHostControls" style="display:none;">
+        <button class="btn-cta" id="onlineHostNextRoundBtn" data-i18n="boom_next_round"></button>
+      </div>
+      <div id="onlineBoomClientWaiting">
+        <p class="hint" data-i18n="waiting_host_restart"></p>
+      </div>
+    </section>
+
+    <!-- 主持人代打 Bottom Sheet 彈層 -->
+    <div id="proxyModal" class="modal-overlay" style="display:none;">
+      <div class="modal-sheet">
+        <h3 data-i18n="proxy_input"></h3>
+        <p class="hint" id="proxyRangeHint"></p>
+        <input id="proxyModalInput" type="number" class="big-input" />
+        <div class="modal-btns">
+          <button id="proxyModalCancel" class="btn-secondary" data-i18n="cancel"></button>
+          <button id="proxyModalSubmit" class="btn-primary" data-i18n="input_submit"></button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="i18n.js"></script>
+  <script src="localGame.js"></script>
+  <script src="p2p.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
