@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#0a0a0f" />
   <meta http-equiv="Content-Security-Policy" 
         content="default-src 'self';
-                 script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com;
+                 script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com blob:;
                  style-src 'self' 'unsafe-inline';
-                 connect-src 'self' wss://*.peerjs.com https://*.peerjs.com stun: turn:;">
+                 connect-src 'self' wss://*.peerjs.com https://*.peerjs.com stun: turn: blob:;">
   <title>開口中・Number Bomb</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
@@ -62,8 +62,9 @@
       <button class="btn-cta" id="passReadyBtn" data-i18n="pass_ready"></button>
     </section>
 
-    <!-- 4. 單機：輸入 -->
+    <!-- 4. 單機：輸入（已補上 rangeMini 膠囊） -->
     <section class="screen" data-screen="solo_input">
+      <div class="range-mini" id="rangeMini"></div>
       <h2 id="inputWhoTurn"></h2>
       <div class="range-badge">
         <span data-i18n="input_range_now"></span>
@@ -202,7 +203,7 @@
       </div>
     </section>
 
-    <!-- 主持人代打 Bottom Sheet 彈層 -->
+    <!-- 主持人代打彈層 Bottom Sheet -->
     <div id="proxyModal" class="modal-overlay" style="display:none;">
       <div class="modal-sheet">
         <h3 data-i18n="proxy_input"></h3>
