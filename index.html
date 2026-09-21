@@ -1,15 +1,61 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  
+  <!-- 🔍 基礎 SEO 與 Google 驗證 -->
+  <title>💣 開口中・數字炸彈 (Number Bomb) | 聚會 P2P 連線破冰遊戲</title>
+  <meta name="description" content="開口中・數字炸彈是一款零伺服器架構（Serverless）的實體聚會破冰遊戲。支援單機傳機與 20 人 WebRTC P2P 多人掃碼連線，具備三級張力脈衝與雙語體驗。">
+  <meta name="keywords" content="開口中, 數字炸彈, Number Bomb, 派對遊戲, 破冰遊戲, WebRTC, P2P, PWA, 尾牙遊戲, 聚會桌遊">
+  <meta name="author" content="Jacky Law">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://jackylawck.github.io/NumberBomb/">
+  <meta name="google-site-verification" content="JZ5UohX-CcP_fQV0_DI9VadkKY4ZoTTkUifL88-fIcY" />
+
+  <!-- 🌐 Open Graph / Facebook / LinkedIn 社交卡片 -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jackylawck.github.io/NumberBomb/">
+  <meta property="og:title" content="💣 開口中・數字炸彈 (Number Bomb) | 派對連線遊戲">
+  <meta property="og:description" content="免安裝 App！手機掃碼即玩，零延遲 P2P 連線、緊張心跳震動與自訂破冰懲罰題庫。">
+  <meta property="og:image" content="https://jackylawck.github.io/NumberBomb/NumberBomb512icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="Number Bomb 數字炸彈遊戲圖標">
+  <meta property="og:locale" content="zh_HK">
+  <meta property="og:site_name" content="開口中・數字炸彈">
+
+  <!-- 🐦 Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="💣 開口中・數字炸彈 (Number Bomb)">
+  <meta name="twitter:description" content="零伺服器、純前端 WebRTC 驅動的實體破冰遊戲。支援 2-20 人單機與線上開房對戰。">
+  <meta name="twitter:image" content="https://jackylawck.github.io/NumberBomb/NumberBomb512icon.png">
+
+  <!-- 📱 PWA 與手機主畫面設定 -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="NumberBomb192icon.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="NumberBomb192icon.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="NumberBomb512icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="數字炸彈">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="application-name" content="開口中・數字炸彈">
+
+  <!-- 🛡️ 企業級資安策略 (CSP) 與權限控制 -->
   <meta http-equiv="Content-Security-Policy" 
         content="default-src 'self';
                  script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com blob:;
                  style-src 'self' 'unsafe-inline';
-                 connect-src 'self' wss://*.peerjs.com https://*.peerjs.com stun: turn: blob:;">
-  <title>開口中・Number Bomb</title>
+                 img-src 'self' data: blob: https://jackylawck.github.io;
+                 font-src 'self' data:;
+                 connect-src 'self' wss://*.peerjs.com https://*.peerjs.com stun: turn: blob:;
+                 media-src 'self' data:;
+                 object-src 'none';
+                 base-uri 'self';
+                 form-action 'none';">
+  <meta http-equiv="Permissions-Policy" content="accelerometer=(), gyroscope=(), microphone=(), camera=(), geolocation=(), payment=()">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" crossorigin="anonymous"></script>
