@@ -658,9 +658,10 @@ input:focus {
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(5px);
   display: flex;
-  align-items: flex-end;
+  align-items: flex-end; /* 手機端預設貼底由下而上 */
   justify-content: center;
   z-index: 1000;
+  padding: 0;
 }
 
 .modal-sheet {
@@ -669,8 +670,26 @@ input:focus {
   max-width: 480px;
   border-radius: 20px 20px 0 0;
   padding: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
+  animation: sheet-up 0.25s ease-out;
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 💻 關鍵改動：桌面端與平板自動完美置中 */
+@media (min-width: 600px) {
+  .modal-overlay {
+    align-items: center; /* 電腦端垂直置中 */
+    padding: 20px;
+  }
+  .modal-sheet {
+    border-radius: 20px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75);
+  }
 }
 
 .modal-btns {
