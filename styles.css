@@ -30,6 +30,7 @@ html, body {
   position: relative;
 }
 
+/* 頂部按鈕群組：語言切換與隱私合規盾牌按鈕 */
 .lang-toggle {
   position: fixed;
   top: 16px;
@@ -44,6 +45,26 @@ html, body {
   font-weight: 600;
   cursor: pointer;
   backdrop-filter: blur(8px);
+}
+
+.compliance-toggle {
+  position: fixed;
+  top: 16px;
+  right: 88px; /* 釘選於語言按鈕左側 */
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.compliance-toggle:active {
+  transform: scale(0.95);
 }
 
 .screen {
@@ -630,11 +651,12 @@ input:focus {
   100% { transform: translateY(-90px) scale(1); opacity: 0; }
 }
 
+/* Modal 底層與彈片 (支援合規彈窗與代打彈層) */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -648,6 +670,7 @@ input:focus {
   border-radius: 20px 20px 0 0;
   padding: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
 }
 
 .modal-btns {
@@ -656,6 +679,7 @@ input:focus {
   margin-top: 16px;
 }
 
+/* Toast 提示條 */
 .toast-container {
   position: fixed;
   top: 20px;
