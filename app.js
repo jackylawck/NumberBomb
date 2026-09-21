@@ -741,3 +741,26 @@ window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
   showToast(App.lang === 'zh' ? '🎉 已成功安裝至手機主畫面！' : '🎉 Successfully added to Home Screen!');
 });
+
+// ---------------- 🛡️ 隱私與合規彈窗開關 (Trust & Governance Modal) ----------------
+const complianceModal = document.getElementById('complianceModal');
+const complianceToggle = document.getElementById('complianceToggle');
+const complianceCloseBtn = document.getElementById('complianceCloseBtn');
+
+if (complianceToggle && complianceModal) {
+  complianceToggle.addEventListener('click', () => {
+    complianceModal.style.display = 'flex';
+  });
+}
+if (complianceCloseBtn && complianceModal) {
+  complianceCloseBtn.addEventListener('click', () => {
+    complianceModal.style.display = 'none';
+  });
+}
+if (complianceModal) {
+  complianceModal.addEventListener('click', (e) => {
+    if (e.target === complianceModal) {
+      complianceModal.style.display = 'none';
+    }
+  });
+}
