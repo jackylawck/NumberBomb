@@ -54,11 +54,21 @@ function applyI18n() {
   document.documentElement.lang = App.lang === 'zh' ? 'zh-Hant' : 'en';
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.dataset.i18n;
-    if (I18N[App.lang][key]) el.textContent = I18N[App.lang][key];
+    if (I18N[App.lang] && I18N[App.lang][key]) {
+      const val = I18N[App.lang][key];
+      // 🛡️ 若內容包含 HTML 標籤（如 <strong>），使用 innerHTML 正常解析標籤，避免輸出字串原始碼
+      if (val.includes('<')) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
+    }
   });
   document.querySelectorAll('[data-i18n-ph]').forEach((el) => {
     const key = el.dataset.i18nPh;
-    if (I18N[App.lang][key]) el.placeholder = I18N[App.lang][key];
+    if (I18N[App.lang] && I18N[App.lang][key]) {
+      el.placeholder = I18N[App.lang][key];
+    }
   });
   document.getElementById('langToggle').textContent = I18N[App.lang].lang_toggle;
 }
