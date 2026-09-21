@@ -724,3 +724,20 @@ if (roomParam) {
   document.getElementById('joinRoomCodeInput').value = roomParam.toLowerCase();
   goto('online_join');
 }
+
+// ---------------- PWA 安裝至手機主畫面支援 ----------------
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (App.screen === 'home') {
+    setTimeout(() => {
+      showToast(App.lang === 'zh' ? '💡 點擊瀏覽器選單可「新增至主畫面」' : '💡 Tap menu to "Add to Home Screen"');
+    }, 2000);
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  showToast(App.lang === 'zh' ? '🎉 已成功安裝至手機主畫面！' : '🎉 Successfully added to Home Screen!');
+});
