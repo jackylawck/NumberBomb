@@ -6,7 +6,7 @@
 
 ## 繁體中文
 
-輕量級、極致現代感、零伺服器架構（Serverless）的實體聚會破冰遊戲。支援「單機傳機（Pass & Play）」與「多人線上 P2P（WebRTC PeerJS）」雙模式，開箱即用，純前端靜態部署。
+輕量級、極致現代感、零伺服器架構（Serverless）的實體聚會破冰遊戲。支援「單機傳機（Pass & Play）」與「多人線上 P2P（WebRTC PeerJS）」雙模式，開箱即用，純前端靜態部署，並具備完整 PWA 支援。
 
 ### 🌟 核心特色
 
@@ -27,6 +27,7 @@
   - **三級緊張感分層**：隨剩餘數字收窄，輸入框呈現 `warn` ➜ `danger` ➜ `critical`（剩餘 1 數必爆）之動態急促紅光脈衝。
   - **行動鍵盤避讓膠囊**：iOS / Android 軟體鍵盤彈起時，頂部自動懸浮半透明範圍膠囊，確保操作不脫節。
   - **原生 Web Audio & 震動**：無依賴外部音檔，以 Oscillator 原生合成引爆音效與極限心跳重擊聲。
+  - **PWA 主畫面安裝**：支援 iOS / Android 快速新增至手機主畫面，沉浸式全螢幕操作。
   - **全響應與雙語支援**：暗黑科技風格，支援繁體中文 / 英文一鍵切換。
 
 ---
@@ -35,16 +36,35 @@
 
 ```text
 NumberBomb/
-├── .nojekyll           # 關閉 GitHub Pages Jekyll 引擎
-├── index.html          # 結構標記、無阻塞 Toast 與安全 CSP 配置
-├── styles.css          # 暗黑極簡主題、呼吸拉桿與三級張力脈衝動畫
-├── app.js              # 核心狀態機、生命週期控制與使用者交互
-├── p2p.js              # 零信任 WebRTC 通訊層 (心跳、去重、重連與清理)
-├── localGame.js        # 單機傳機模式邏輯引擎
-├── i18n.js             # 雙語字典庫、破冰挑戰題庫與情緒語彙
-└── README.md           # 專案說明文件
+├── .nojekyll                 # 關閉 GitHub Pages Jekyll 引擎
+├── index.html                # 語意化結構、無阻塞 Toast 與安全 CSP 配置
+├── styles.css                # 暗黑極簡主題、呼吸拉桿與三級張力脈衝動畫
+├── app.js                    # 核心狀態機、生命週期控制與 PWA 安裝監聽
+├── p2p.js                    # 零信任 WebRTC 通訊層 (心跳、去重、重連與清理)
+├── localGame.js              # 單機傳機模式邏輯引擎
+├── i18n.js                   # 雙語字典庫、破冰挑戰題庫與情緒語彙
+├── manifest.json             # PWA 應用設定檔
+├── NumberBomb192icon.png     # PWA 應用圖標 (192x192 簡約風格)
+├── NumberBomb512icon.png     # PWA 開啟圖標 / 社交預覽圖 (512x512 高保真 3D)
+├── PRIVACY_POLICY.md         # 隱私政策與資料治理合規聲明
+├── TERMS_OF_USE.md           # 服務條款與免責聲明
+└── README.md                 # 專案說明文件
 
 ```
+
+---
+
+### 🛡️ 資料治理與合規聲明 (Governance & Privacy)
+
+本專案經過專業法規邊界評估，遵循 **從設計著手保護隱私（Privacy-by-Design）** 與 **資料最小化（Data Minimization）** 原則（符合 ISO/IEC 27001 資安與 ISO/IEC 27701 隱私保護標準）：
+
+* **零伺服器儲存**：全靜態架構，無後端伺服器與資料庫，不收集、不保存任何使用者個人身分資料（PII）。符合歐盟 GDPR 與香港《個人資料（私隱）條例》（第 486 章）資料最小化原則。
+* **AI 治理聲明**：本遊戲核心邏輯完全依賴確定性狀態機（Deterministic State Machine），**不包含任何機器學習（ML）或人工智慧（AI）推理系統**，依法明確排除歐盟人工智慧法案（EU AI Act）與 ISO/IEC 42001 之法定合規義務。
+* **治理文件**：
+* 詳閱 [隱私政策與資料治理合規聲明 (PRIVACY_POLICY.md)](https://www.google.com/search?q=PRIVACY_POLICY.md&utm_source=gemini)
+* 詳閱 [服務條款與免責聲明 (TERMS_OF_USE.md)](https://www.google.com/search?q=TERMS_OF_USE.md&utm_source=gemini)
+
+
 
 ---
 
@@ -79,7 +99,7 @@ python3 -m http.server 8000
 
 ## English
 
-A lightweight, modern, and serverless icebreaker party game. Features both "Pass & Play" (single-device mode) and "Online P2P" (multi-device WebRTC mode powered by PeerJS). Completely static and deployable anywhere out-of-the-box.
+A lightweight, modern, and serverless icebreaker party game. Features both "Pass & Play" (single-device mode) and "Online P2P" (multi-device WebRTC mode powered by PeerJS). Completely static, PWA-ready, and deployable anywhere out-of-the-box.
 
 ### 🌟 Key Features
 
@@ -106,6 +126,7 @@ A lightweight, modern, and serverless icebreaker party game. Features both "Pass
 * **Three-Tier Tension Pacing**: As the range narrows, the input dynamically transitions through `warn` ➜ `danger` ➜ `critical` (last-number sudden death) with visual, auditory, and haptic warnings.
 * **Keyboard Avoidance Capsule**: When mobile virtual keyboards pop up on iOS/Android, a frosted floating capsule anchors the current safe range at the top.
 * **Pure Web Audio & Haptics**: Uses browser Oscillators to synthesize explosion sounds and deep warning heartbeats with zero external asset dependencies.
+* **PWA Installation**: Fully installable as a standalone app on iOS and Android home screens.
 * **Full Localization**: Seamless toggle between Traditional Chinese (繁體中文) and English.
 
 
@@ -116,16 +137,35 @@ A lightweight, modern, and serverless icebreaker party game. Features both "Pass
 
 ```text
 NumberBomb/
-├── .nojekyll           # Disables Jekyll processing on GitHub Pages
-├── index.html          # Semantic layout, non-blocking toast container, and CSP
-├── styles.css          # Cyberpunk dark theme, breathing inputs, and tension animations
-├── app.js              # State machine, view routing, and interaction logic
-├── p2p.js              # Zero-trust WebRTC layer (heartbeat, deduplication, lifecycle)
-├── localGame.js        # Core logic engine for Pass & Play mode
-├── i18n.js             # Multilingual dictionary, icebreaker prompts, and reaction sets
-└── README.md           # Project documentation
+├── .nojekyll                 # Disables Jekyll processing on GitHub Pages
+├── index.html                # Semantic layout, non-blocking toast container, and CSP
+├── styles.css                # Cyberpunk dark theme, breathing inputs, and tension animations
+├── app.js                    # State machine, view routing, and PWA installation logic
+├── p2p.js                    # Zero-trust WebRTC layer (heartbeat, deduplication, lifecycle)
+├── localGame.js              # Core logic engine for Pass & Play mode
+├── i18n.js                   # Multilingual dictionary, icebreaker prompts, and reaction sets
+├── manifest.json             # PWA Web App Manifest
+├── NumberBomb192icon.png     # App Launcher icon (192x192 minimalist style)
+├── NumberBomb512icon.png     # Splash & Open Graph preview image (512x512 3D render)
+├── PRIVACY_POLICY.md         # Privacy Policy & Data Governance Statement
+├── TERMS_OF_USE.md           # Terms of Service & Disclaimer
+└── README.md                 # Project documentation
 
 ```
+
+---
+
+### 🛡️ Governance, Privacy & Compliance
+
+This application adheres to **Privacy-by-Design** and **Data Minimization** principles aligned with ISO/IEC 27001 and ISO/IEC 27701 standards:
+
+* **Zero Database Persistence**: Purely client-side execution with no centralized database or logging. Compliant with EU GDPR and Hong Kong Personal Data (Privacy) Ordinance (Cap. 486) data minimization mandates.
+* **AI Governance Exemption**: The system runs entirely on deterministic rules and random seeds. It **does not deploy Machine Learning (ML) or Artificial Intelligence (AI)**, formally exempting it from statutory obligations under the EU Artificial Intelligence Act and ISO/IEC 42001.
+* **Governance Disclosures**:
+* Read the [Privacy Policy & Data Governance Statement](https://www.google.com/search?q=PRIVACY_POLICY.md&utm_source=gemini)
+* Read the [Terms of Service & Disclaimer](https://www.google.com/search?q=TERMS_OF_USE.md&utm_source=gemini)
+
+
 
 ---
 
@@ -161,3 +201,4 @@ While default STUN servers provide reliable connectivity across 4G/5G and home W
 ### 📄 License
 
 Distributed under the [MIT License](https://www.google.com/search?q=LICENSE&utm_source=gemini). Free for personal and commercial team-building events.
+
