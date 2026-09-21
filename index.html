@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -62,7 +64,10 @@
 </head>
 <body>
 
+  <!-- 頂部功能鍵：合規承諾與多語言切換 -->
+  <button id="complianceToggle" class="compliance-toggle" aria-label="Privacy & Governance" title="隱私與合規">🛡️</button>
   <button id="langToggle" class="lang-toggle" aria-label="Toggle language">🌐 EN</button>
+  
   <div id="reactionLayer"></div>
   <div id="toastContainer" class="toast-container"></div>
 
@@ -108,7 +113,7 @@
       <button class="btn-cta" id="passReadyBtn" data-i18n="pass_ready"></button>
     </section>
 
-    <!-- 4. 單機：輸入（已補上 rangeMini 膠囊） -->
+    <!-- 4. 單機：輸入 -->
     <section class="screen" data-screen="solo_input">
       <div class="range-mini" id="rangeMini"></div>
       <h2 id="inputWhoTurn"></h2>
@@ -258,6 +263,26 @@
         <div class="modal-btns">
           <button id="proxyModalCancel" class="btn-secondary" data-i18n="cancel"></button>
           <button id="proxyModalSubmit" class="btn-primary" data-i18n="input_submit"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🛡️ 隱私與合規安心承諾彈層 (Trust & Governance Modal) -->
+    <div id="complianceModal" class="modal-overlay" style="display:none;">
+      <div class="modal-sheet" style="max-height: 85vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="margin: 0;" data-i18n="trust_title"></h3>
+          <button id="complianceCloseBtn" style="background: none; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer; padding: 4px 8px;">✕</button>
+        </div>
+        <p style="font-size: 13px; line-height: 1.6; color: var(--text-dim);" data-i18n="trust_desc"></p>
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin: 14px 0; font-size: 13px; line-height: 1.7;">
+          <p style="margin: 4px 0;" data-i18n="trust_point1"></p>
+          <p style="margin: 4px 0;" data-i18n="trust_point2"></p>
+          <p style="margin: 4px 0;" data-i18n="trust_point3"></p>
+        </div>
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; flex-wrap: wrap;">
+          <a href="PRIVACY_POLICY.md" target="_blank" class="btn-secondary" style="font-size: 12px; text-decoration: none; padding: 8px 14px;" data-i18n="trust_link_privacy"></a>
+          <a href="TERMS_OF_USE.md" target="_blank" class="btn-secondary" style="font-size: 12px; text-decoration: none; padding: 8px 14px;" data-i18n="trust_link_terms"></a>
         </div>
       </div>
     </div>
