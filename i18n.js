@@ -62,7 +62,16 @@ const I18N = {
     alert_room_full: "⚠️ 房間已滿員 (上限20人)！",
     host_disconnected: "⚠️ 主持人連線已中斷，請稍後重試。",
     game_stalled: "⚠️ 所有連線玩家皆已離線，遊戲暫停。",
-    invalid_room: "⚠️ 找不到該房間，請確認房號是否正確。"
+    invalid_room: "⚠️ 找不到該房間，請確認房號是否正確。",
+
+    // 🛡️ 隱私、資安與治理安心承諾 (Governance & Trust)
+    trust_title: "🛡️ 隱私與資安安心承諾",
+    trust_desc: "本應用程式遵循「從設計著手保護隱私（Privacy-by-Design）」原則開發，為企業團隊建設與社交聚會提供零資料負擔的破冰體驗：",
+    trust_point1: "🔒 <strong>零伺服器儲存 (Zero Retention)</strong>：無後端資料庫，不收集真實姓名、IP 或個人歷程。",
+    trust_point2: "🌐 <strong>點對點傳輸 (P2P by Design)</strong>：WebRTC 直接連線，落實 GDPR 與香港私隱條例之「資料最小化」。",
+    trust_point3: "⚖️ <strong>非 AI 演算法透明性</strong>：採純數學隨機邏輯，依法不涉 EU AI Act 及生成式演算法監管風險。",
+    trust_link_privacy: "📄 完整隱私政策",
+    trust_link_terms: "📜 服務條款"
   },
   en: {
     title: "Number Bomb",
@@ -124,7 +133,16 @@ const I18N = {
     alert_room_full: "⚠️ Room is full (Max 20)!",
     host_disconnected: "⚠️ Host disconnected. Please rejoin later.",
     game_stalled: "⚠️ All active players disconnected. Game paused.",
-    invalid_room: "⚠️ Room not found. Please verify the code."
+    invalid_room: "⚠️ Room not found. Please verify the code.",
+
+    // 🛡️ Privacy, Security & Governance Statement
+    trust_title: "🛡️ Privacy & Governance Statement",
+    trust_desc: "Engineered strictly under global Privacy-by-Design principles, delivering a completely serverless, zero-data-retention icebreaker experience:",
+    trust_point1: "🔒 <strong>Zero Database Persistence</strong>: Purely client-side execution with no backend database or telemetry tracking.",
+    trust_point2: "🌐 <strong>P2P WebRTC Direct</strong>: Ephemeral data minimization complying with GDPR and Hong Kong PDPO principles.",
+    trust_point3: "⚖️ <strong>Deterministic Algorithm</strong>: Operates on fixed random logic, formally exempt from EU AI Act regulations.",
+    trust_link_privacy: "📄 Privacy Policy",
+    trust_link_terms: "📜 Terms of Use"
   }
 };
 
@@ -140,9 +158,9 @@ const REACTIONS = {
 };
 
 const REACTION_PHASES = {
-  WAITING:     ['nervous', 'too_close', 'watching', 'too_slow'],
+  WAITING:      ['nervous', 'too_close', 'watching', 'too_slow'],
   CLOSE_RANGE: ['run', 'too_close', 'nervous'],
-  BOOM:        ['boom', 'lol', 'clap']
+  BOOM:         ['boom', 'lol', 'clap']
 };
 
 const PENALTY_POOL = [
